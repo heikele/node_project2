@@ -52,8 +52,8 @@ module.exports = class Product {
   static deleteById(id) {
     getProductsFromFile(products => {
       const product = products.find(prod => prod.id === id);
-      const productIndex = products.filter(prod => prod.id === id);
-      fs.writeFile(p, JSON.stringify(products), err => {
+      const updatedProducts = products.filter(prod => prod.id !== id);
+      fs.writeFile(p, JSON.stringify(updatedProducts), err => {
         if (!err) {
           Cart.deleteProduct(id, product.price);
         }
@@ -67,11 +67,8 @@ module.exports = class Product {
 
   static findById(id, cb) {
     getProductsFromFile(products => {
-      const updatedProducts = products.find(p => p.id !== id);
-      fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-        if (!err) {
-        }
-      });
+      const product = products.find(p => p.id === id);
+      cb(product);
     });
   }
 };
