@@ -2,7 +2,6 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const expressHbs = require('express-handlebars');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -39,30 +38,25 @@ app.use(errorController.get404);
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
 User.hasOne(Cart);
-Cart.belongsTo(User); // not necessary
+Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  // .sync({ force: true }) //only for forcing complete reinstantiation of database
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then(result => {
     return User.findByPk(1);
+    // console.log(result);
   })
   .then(user => {
     if (!user) {
-      return User.create({
-        name: 'Ed',
-        email: 'test@test.com'
-      });
+      return User.create({ name: 'Max', email: 'test@test.com' });
     }
-    return Promise.resolve(user);
+    return user;
   })
   .then(user => {
-    //console.log(user);
-    user.createCart();
-  })
-  .then(cart => {
+    // console.log(user);
     app.listen(3000);
   })
   .catch(err => {
